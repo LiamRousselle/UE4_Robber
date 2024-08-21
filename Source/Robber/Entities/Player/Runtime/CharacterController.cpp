@@ -4,6 +4,7 @@
 #include "CharacterController.h"
 
 #include "CameraController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -17,6 +18,19 @@ ACharacterController::ACharacterController()
 	// Construct CameraController
 	CameraController = CreateDefaultSubobject<UCameraController>(FName("CameraController"));
 	CameraController->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+	// Properties
+	UCharacterMovementComponent* movementComponent = GetCharacterMovement();
+	
+	// NOTE!
+	// If the CharacterMovementComponent doesn't exist or doesn't construct successfully we want
+	// the program to crash as that component is a vital part to the character controller.
+	// Without it, the character controller will lose most of its functionality. It's best to just
+	// boot the player out of the application.
+	
+	movementComponent->BrakingFriction = 10.f;
+	movementComponent->MaxAcceleration = 1351.680054;
+	movementComponent->MaxWalkSpeed = 340.f;
 }
 
 // Called when the game starts or when spawned
@@ -58,7 +72,7 @@ void ACharacterController::StepMovementThisFrame(float deltaTime)
 	FVector forward = directions.Get<0>() * RawMoveVector.Y;
 	FVector right = directions.Get<1>() * RawMoveVector.X;
 
-	FVector moveDirection = (forward + right); // don't need to normalize as i believe AddMovementInput already handles that
+	FVector moveDirection = forward + right; // don't need to normalize since AddMovementInput already handles that
 	AddMovementInput(moveDirection);
 	
 	// Old movement code for testing movement
