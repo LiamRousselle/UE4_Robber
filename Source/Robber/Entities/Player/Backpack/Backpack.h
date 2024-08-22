@@ -1,8 +1,9 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Copyright (c) 2024 Liam Rousselle
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Tool.h"
 #include "Components/ActorComponent.h"
 #include "Backpack.generated.h"
 
@@ -20,4 +21,13 @@ public:
 	// Sets default values for this component's properties
 	UBackpack();
 
+	// The list of tools which the player owns
+	TArray<TSubclassOf<ATool>> OwnedTools = TArray<TSubclassOf<ATool>>();
+
+	// The hash which will be used for the players hot bar
+	// The key represents the slot which corresponds with the input they need to do
+	// The value is the tool in that slot.
+	TMap<int32, TSubclassOf<ATool>> ToolHotBar;
+
+	
 };
