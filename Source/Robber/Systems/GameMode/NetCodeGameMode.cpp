@@ -1,9 +1,7 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "NetCodeGameMode.h"
+﻿#include "NetCodeGameMode.h"
+#include "Robber/Entities/Player/Runtime/RuntimePlayerController.h"
 
 ANetCodeGameMode::ANetCodeGameMode()
 {
-	//PlayerControllerClass = nullptr;
+	PlayerControllerClass = ARuntimePlayerController::StaticClass();
 }

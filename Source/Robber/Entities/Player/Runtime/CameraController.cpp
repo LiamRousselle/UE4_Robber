@@ -25,15 +25,25 @@ UCameraController::UCameraController()
 }
 
 
-void UCameraController::RotateCamera(FRotator direction)
+void UCameraController::RotateCameraWithConstraints(FRotator direction)
 {
-	FRotator current = GetRelativeRotation();
+	if (bLockCharacterRotation)
+	{
+		// When the character shouldn't rotate along the yaw axis
+		FRotator current = GetRelativeRotation();
 
-	float pitch = FMath::Clamp(direction.Pitch + current.Pitch, -80.f, 80.f);
-	float yaw = current.Yaw + direction.Yaw;
+		float pitch = FMath::Clamp(direction.Pitch + current.Pitch, -80.f, 80.f);
+		float yaw = current.Yaw + direction.Yaw;
 
-	FRotator result = FRotator(pitch, yaw, 0.f);
-	SetRelativeRotation(result);
+		FRotator result = FRotator(pitch, yaw, 0.f);
+		SetRelativeRotation(result);
+	}
+	else
+	{
+		// When teh character should rotate along the yaw axis
+		FRotator current = GetRelativeRotation();
+		
+	}
 }
 
 TTuple<FVector, FVector> UCameraController::GetMovementDirections()

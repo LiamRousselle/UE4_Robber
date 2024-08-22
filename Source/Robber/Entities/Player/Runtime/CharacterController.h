@@ -47,7 +47,21 @@ protected:
 	// Called every frame
 	// Used to step the character's movement each frame
 	void StepMovementThisFrame(float deltaTime);
-	
+
+private:
+	// Used to send the yaw we're currently seeing on the client to the server
+	// Unreliable as this RPC will be called very often
+	UFUNCTION( Server, Unreliable )
+	void ServerReplicateYawOrientation(float yaw);
+	void ServerReplicateYawOrientation_Implementation(float yaw);
+
+	// Called by ServerReplicateYawOrientation on the server to replicate the character controllers
+	// yaw on all clients except the client who sent it
+	// Unreliable as this RPC will be called very often
+	UFUNCTION( NetMulticast, Reliable )
+	void ClientReplicateYawOrientation(float yaw);
+	void ClientReplicateYawOrientation_Implementation(float yaw);
+
 public:
 	// Called every frame
 	virtual void Tick(float deltaTime) override;

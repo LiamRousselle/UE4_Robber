@@ -26,13 +26,16 @@ public:
 	// Sets default values for this component's properties
 	UCameraController();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bLockCharacterRotation = true;
+	
 	// The component which will render the world to the player
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraComponent* CameraComponent = nullptr;
 
 	// Rotates the camera using constraints
 	// The constraints being the Pitch will always be clamped between -80* and 80*
-	void RotateCamera(FRotator direction);
+	void RotateCameraWithConstraints(FRotator direction);
 
 	// Gets both the forward & right directions this camera is facing. Then those directions will
 	// lose there Z axis (Z = 0), then finally normalized, and returned in a tuple.

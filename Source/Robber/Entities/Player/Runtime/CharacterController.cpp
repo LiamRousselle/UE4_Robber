@@ -15,6 +15,11 @@ ACharacterController::ACharacterController()
 	// Allow this character to replicate to other clients.
 	bReplicates = true;
 
+	// Don't use Unreal's built in rotators
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
+	
 	// Construct CameraController
 	CameraController = CreateDefaultSubobject<UCameraController>(FName("CameraController"));
 	CameraController->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
@@ -31,6 +36,8 @@ ACharacterController::ACharacterController()
 	movementComponent->BrakingFriction = 10.f;
 	movementComponent->MaxAcceleration = 1351.680054;
 	movementComponent->MaxWalkSpeed = 340.f;
+	movementComponent->bIgnoreBaseRotation = true;
+	movementComponent->bOrientRotationToMovement = false;
 }
 
 // Called when the game starts or when spawned
@@ -52,12 +59,18 @@ void ACharacterController::InputMoveRight(float axis)
 
 void ACharacterController::InputTurnUp(float axis)
 {
-	CameraController->RotateCamera(FRotator(axis, 0.f, 0.f));
+	CameraController->RotateCameraWithConstraints(FRotator(axis, 0.f, 0.f));
 }
 
 void ACharacterController::InputTurnRight(float axis)
 {
-	CameraController->RotateCamera(FRotator(0.f, axis, 0.f));
+	CameraController->RotateCameraWithConstraints(FRotator(0.f, axis, 0.f));
+
+	// Replicate the yaw
+	if (GetLocalRole() == ROLE_AutonomousProxy)
+	{
+		ServerReplicateYawOrientation(CameraController->GetRelativeRotation().Yaw);
+	}
 }
 
 void ACharacterController::StepMovementThisFrame(float deltaTime)
@@ -81,11 +94,21 @@ void ACharacterController::StepMovementThisFrame(float deltaTime)
 	//AddMovementInput(worldDirection); // don't need to multiply by deltaTime because unreal already does that for me
 }
 
+void ACharacterController::ServerReplicateYawOrientation_Implementation(float yaw)
+{
+	ClientReplicateYawOrientation(yaw);
+}
+
+void ACharacterController::ClientReplicateYawOrientation_Implementation(float yaw)
+{
+	GetMesh()->SetWorldRotation(FRotator(0.f, yaw, 0.f));
+}
+
 // Called every frame
 void ACharacterController::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
-
+	
 	StepMovementThisFrame(deltaTime);
 }
 
