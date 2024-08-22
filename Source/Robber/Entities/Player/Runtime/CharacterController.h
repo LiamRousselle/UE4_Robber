@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Robber/Entities/Player/Backpack/Backpack.h"
 #include "CharacterController.generated.h"
 
 /* The character controller is the character which all players shall possess. This class
@@ -27,6 +28,10 @@ public:
 	// The CameraController which will handle everything camera related
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraController* CameraController = nullptr;
+
+	// The backpack which will store all the tools this player owns
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBackpack* Backpack = nullptr;
 	
 protected:
 	// The 2D vector which represents the input map of the direction the player wants to move

@@ -2,7 +2,6 @@
 
 
 #include "CharacterController.h"
-
 #include "CameraController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -24,6 +23,10 @@ ACharacterController::ACharacterController()
 	CameraController = CreateDefaultSubobject<UCameraController>(FName("CameraController"));
 	CameraController->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
+	// Construct Backpack
+	Backpack = CreateDefaultSubobject<UBackpack>(FName("Backpack"));
+	Backpack->AfterConstructor(this);
+	
 	// Properties
 	UCharacterMovementComponent* movementComponent = GetCharacterMovement();
 	
