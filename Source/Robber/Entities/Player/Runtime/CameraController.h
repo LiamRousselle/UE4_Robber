@@ -15,6 +15,7 @@
  * stuff like relative character movement.
  */
 
+class ACharacterController;
 class UCameraComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -25,16 +26,17 @@ class ROBBER_API UCameraController : public USceneComponent
 public:
 	// Sets default values for this component's properties
 	UCameraController();
-
+	~UCameraController() = default;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bLockCharacterRotation = true;
+	bool bLockCharacterRotation = false;
 	
 	// The component which will render the world to the player
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UCameraComponent* CameraComponent = nullptr;
 
 	// Rotates the camera using constraints
-	// The constraints being the Pitch will always be clamped between -80* and 80*
+	// The constraints being the Pitch will always be clamped between -80deg and 80deg
 	void RotateCameraWithConstraints(FRotator direction);
 
 	// Gets both the forward & right directions this camera is facing. Then those directions will

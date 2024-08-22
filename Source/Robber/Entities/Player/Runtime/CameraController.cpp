@@ -2,7 +2,7 @@
 
 
 #include "CameraController.h"
-
+#include "CharacterController.h"
 #include "Camera/CameraComponent.h"
 
 // Used to remove the Z axis from vector (set Z to zero)
@@ -24,10 +24,16 @@ UCameraController::UCameraController()
 	CameraComponent->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
-
 void UCameraController::RotateCameraWithConstraints(FRotator direction)
 {
-	if (bLockCharacterRotation)
+	// @TODO(Liam):
+	// do this when implementing character rotations being locked!
+	// Since the character's rotations locked that means we should rotate past the characters
+	// neck limit (y'know, cuz realism lol)
+	// So, that means clamping the yaw axis around like 45 deg or 80 deg
+	// So do this when i actually need to lock the characters rotation
+	
+	if (!bLockCharacterRotation)
 	{
 		// When the character shouldn't rotate along the yaw axis
 		FRotator current = GetRelativeRotation();
@@ -37,12 +43,6 @@ void UCameraController::RotateCameraWithConstraints(FRotator direction)
 
 		FRotator result = FRotator(pitch, yaw, 0.f);
 		SetRelativeRotation(result);
-	}
-	else
-	{
-		// When teh character should rotate along the yaw axis
-		FRotator current = GetRelativeRotation();
-		
 	}
 }
 
@@ -57,15 +57,13 @@ TTuple<FVector, FVector> UCameraController::GetMovementDirections()
 void UCameraController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 }
 
-
 // Called every frame
-void UCameraController::TickComponent(float DeltaTime, ELevelTick TickType,
-                                      FActorComponentTickFunction* ThisTickFunction)
+void UCameraController::TickComponent(float deltaTime, ELevelTick tickType, FActorComponentTickFunction* thisTickFunction)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	Super::TickComponent(deltaTime, tickType, thisTickFunction);
 	
 }
 
